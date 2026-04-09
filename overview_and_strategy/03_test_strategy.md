@@ -82,3 +82,19 @@ Data consistency is treated as the highest risk because incorrect relationships 
 ## Justification
 
 This strategy focuses on identifying system weaknesses rather than verifying expected functionality. Decisions are based on risk, with priority given to scenarios that can lead to incorrect system behavior. The approach reflects real-world conditions where data may be invalid, incomplete, or inconsistent.
+
+Automation Approach
+
+A lightweight automation framework was implemented using pytest to validate the strategy.
+
+UI testing was automated using Playwright with a Page Object Model to keep UI logic separate from test logic.
+
+API interactions were structured using a simple client layer to improve readability and reuse.
+
+Retry logic was added to handle transient failures and improve test reliability.
+
+Data-driven testing was implemented to validate multiple inputs and avoid hardcoded scenarios.
+
+Parallel execution was enabled to reduce test execution time and simulate concurrent behavior.
+
+The automation focuses on validating system behavior across UI, API, GraphQL, and end-to-end workflows, ensuring alignment with the defined testing strategy.
