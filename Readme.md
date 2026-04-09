@@ -1,4 +1,4 @@
-# QA + AI Distributed System Testing
+# QA  Distributed System Testing
 
 ## Overview
 
