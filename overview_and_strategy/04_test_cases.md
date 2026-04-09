@@ -1,151 +1,67 @@
-# Test Cases
+# Advanced Test Cases (System-Level)
 
-These test cases are designed based on actual system behavior and cross-service observations.
+## End-to-End User → Order → Geo Flow
 
-The focus is on how individual services behave, how they interact, and where the system allows invalid or inconsistent states.
-
----
-
-## User Service (ReqRes)
-
-### Positive Scenarios
-
-TC01 - Validate GET user with valid ID → Expect consistent user structure used across system  
-
-TC02 - Validate POST user → Expect creation but observe incomplete response structure  
+| TC ID | Scenario | Risk Focus | Preconditions | Test Steps | Test Data | Expected Result | Insight |
+|------|----------|-----------|--------------|------------|-----------|----------------|---------|
+| TC01 | Validate user exists before order mapping | Data consistency | User service available | 1. Fetch user 2. Fetch order 3. Compare IDs | userId=1 | Order.userId matches User.id | Ensures system does not assume valid relationships |
+| TC02 | Order created with non-existing user | Orphan data | No user with ID=3 | 1. Fetch order with userId=3 2. Validate user | userId=3 | System should detect missing user | Identifies lack of referential validation |
+| TC03 | User created after order creation | Temporal inconsistency | Order exists first | 1. Create order 2. Create user later | same userId | System should reconcile or flag mismatch | Checks time-based data integrity issues |
+| TC04 | Multiple orders mapped to invalid user | Data amplification risk | Invalid userId used | 1. Create multiple orders with invalid userId | userId=999 | System should detect pattern | Highlights how bad data scales silently |
 
 ---
 
-### Negative Scenarios
+## Silent Failure Detection
 
-TC03 - Validate POST user with invalid data types → Expect rejection but system accepts  
-
-TC04 - Validate POST on invalid endpoint → System still processes request  
-
----
-
-### Edge Cases
-
-TC05 - Validate repeated POST requests → Multiple users created (no idempotency)  
-
-TC06 - Validate mismatch in ID type (string vs number) → Causes inconsistency across services  
-
-TC07 - Validate missing fields in POST → System still accepts incomplete data  
+| TC ID | Scenario | Risk Focus | Preconditions | Test Steps | Test Data | Expected Result | Insight |
+|------|----------|-----------|--------------|------------|-----------|----------------|---------|
+| TC05 | API returns 200 with incorrect mapping | Silent failure | Invalid relationship exists | 1. Fetch order 2. Validate user mapping | mismatched IDs | System should not treat as success | Detects false positives in API success |
+| TC06 | Partial success across services | Incomplete workflow | User valid, order invalid | 1. Fetch user 2. Fetch invalid order | N/A | System should flag incomplete state | Ensures system does not proceed blindly |
+| TC07 | GraphQL returns valid response but irrelevant data | Data correctness | API available | 1. Query country 2. Compare with user context | country mismatch | System should validate relevance | Detects over-trust in external APIs |
 
 ---
 
-## Order Service (JSONPlaceholder)
+## External Dependency Behavior
 
-### Positive Scenarios
-
-TC08 - Validate GET order with valid ID → Expect order with userId  
-
----
-
-### Negative Scenarios
-
-TC09 - Validate order.userId without existing user → System allows orphan records  
+| TC ID | Scenario | Risk Focus | Preconditions | Test Steps | Test Data | Expected Result | Insight |
+|------|----------|-----------|--------------|------------|-----------|----------------|---------|
+| TC08 | Delay in external API (Geo service) | Latency impact | API delay simulated | 1. Call delayed endpoint 2. Observe system flow | delay=3s | System should handle delay gracefully | Identifies blocking dependency issues |
+| TC09 | External service unavailable | Dependency failure | API down | 1. Simulate failure 2. Trigger workflow | N/A | System should fail gracefully | Checks resilience strategy |
+| TC10 | Repeated calls to slow API | Performance degradation | No caching | 1. Trigger repeated calls | same request | Response time increases | Highlights absence of caching |
 
 ---
 
-### Edge Cases
+## Data Validation (Dataset-Level Thinking)
 
-TC10 - Validate multiple orders pointing to same invalid user → Amplifies inconsistency  
-
-TC11 - Validate large or invalid userId values → No validation enforced  
-
-TC12 - Validate system assumes userId is always valid → Dependency not verified  
-
----
-
-## GraphQL Service (Geo)
-
-### Positive Scenarios
-
-TC13 - Validate country query → Data returned and used directly  
+| TC ID | Scenario | Risk Focus | Preconditions | Test Steps | Test Data | Expected Result | Insight |
+|------|----------|-----------|--------------|------------|-----------|----------------|---------|
+| TC11 | Payment value is zero or negative | Financial integrity | Dataset loaded | 1. Validate payment values | amount ≤ 0 | Records should be flagged invalid | Ensures business logic validation |
+| TC12 | Multiple payments for single order | Duplicate / retry issue | Dataset loaded | 1. Count payments per order | >3 payments | System should flag anomaly | Detects retry or duplication issues |
+| TC13 | Order exists without customer | Referential integrity | Dataset loaded | 1. Validate order.customerId | missing customer | Should be flagged | Identifies orphan records |
 
 ---
 
-### Negative Scenarios
+## Security and Abuse Patterns
 
-TC14 - Validate invalid query → Proper error response  
-
----
-
-### Edge Cases
-
-TC15 - Validate missing or partial country data → No fallback handling  
-
-TC16 - Validate over-fetching unnecessary data → No restriction  
-
-TC17 - Validate dependency on external service → System fails if unavailable  
+| TC ID | Scenario | Risk Focus | Preconditions | Test Steps | Test Data | Expected Result | Insight |
+|------|----------|-----------|--------------|------------|-----------|----------------|---------|
+| TC14 | Access API without authentication | Broken auth | No token | 1. Call API without token | N/A | Should be rejected | Detects open access risk |
+| TC15 | Replay same request multiple times | Abuse / duplication | API accepts requests | 1. Send same POST repeatedly | same payload | System should detect duplicates | Tests idempotency gap |
+| TC16 | Manipulated input across services | Input trust issue | None | 1. Send unexpected values | invalid types | Should be rejected | Checks lack of validation |
 
 ---
 
-## Cross-Service Interaction 
+## Failure and System Behavior
 
-### Positive Scenarios
-
-TC18 - Validate order.userId maps correctly to user.id → Works only when assumption holds  
-
----
-
-### Negative Scenarios
-
-TC19 - Validate mismatch between order.userId and user.id → No error, system continues  
-
-TC20 - Validate partial success (user valid, order invalid) → No failure surfaced  
-
----
-
-### Edge Cases
-
-TC21 - Validate system behavior when user exists but mapping is incorrect → Relationship not enforced  
-
-TC22 - Validate system with inconsistent data across services → No reconciliation  
-
-TC23 - Validate system trusts all incoming service data → No verification  
-
----
-
-## Failure and Resilience
-
-### Negative Scenarios
-
-TC24 - Validate delayed response (httpbin) → No retry or fallback  
-
-TC25 - Validate partial service failure → System continues with incomplete data  
-
----
-
-### Edge Cases
-
-TC26 - Validate timeout scenarios → No graceful handling  
-
-TC27 - Validate cascading failure (one service slow impacts flow)  
-
----
-
-## Security and Validation Gaps
-
-### Negative Scenarios
-
-TC28 - Validate malformed payload → Accepted without strict validation  
-
-TC29 - Validate repeated requests (abuse scenario) → No rate limiting  
-
----
-
-### Edge Cases
-
-TC30 - Validate system does not enforce authentication strictly → Open access behavior  
-
-TC31 - Validate input manipulation → System accepts unexpected values  
-
----
+| TC ID | Scenario | Risk Focus | Preconditions | Test Steps | Test Data | Expected Result | Insight |
+|------|----------|-----------|--------------|------------|-----------|----------------|---------|
+| TC17 | One service fails while others succeed | Partial failure | Order fails, user works | 1. Trigger failure 2. Observe flow | N/A | System should not proceed silently | Detects workflow inconsistency |
+| TC18 | Cascading delay across services | System slowdown | One service slow | 1. Add delay 2. Trigger full flow | delay=3s | Overall response increases | Identifies dependency chaining |
+| TC19 | Inconsistent state across retries | Data mismatch | Retry logic exists | 1. Trigger retry scenario | same request | Data should remain consistent | Checks idempotency and stability |
 
 ## Limitations
 
 Geo-based validation, VPN testing, and infrastructure-level failures were not achievable due to reliance on public APIs.
 
 However, these are identified as high-risk areas in a real-world system.
+

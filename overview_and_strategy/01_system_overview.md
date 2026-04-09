@@ -18,3 +18,4 @@ The Order Service references users through userId, but this relationship is not 
 
 There is no coordination between services, and failures in one service are not handled by others. This creates a system that is simple but prone to inconsistency and invalid states.
 
+![alt text](image-1.png)
