@@ -80,12 +80,15 @@ This manual simulation highlights how distributed systems can appear functional 
 few samples of findings :-
 
 ## 404 not found for invlaid user id 
+
 ![alt text](image-2.png)
 
-##with inalvid credntails 
+## with inalvid credntails 
+
 ![alt text](image-3.png)
 
 ## Order service allows creation of orders for non-existent users
+
 ![alt text](image-4.png)
 
 
