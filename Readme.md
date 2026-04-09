@@ -10,114 +10,69 @@ The approach is not limited to verifying functionality. It focuses on how data f
 
 ## Project Structure
 
-LetteAi_assessment/
-├── API_manualTesting/
-│ ├── API_ManualSimulation.md
-│ └── evidence/
-│
-├── automation/
-│ ├── clients/
-│ ├── pages/
-│ ├── tests/
-│ ├── utils/
-│ ├── config.py
-│ ├── validate_data.py
-│ └── test_data.json
-│
-├── dataset_validation/
-│ ├── datasetValidation.md
-│ ├── validate_dataset.py
-│ └── datasets (customers, orders, payments)
-│
-├── overview_and_strategy/
-│ ├── system overview
-│ ├── test strategy
-│ ├── test cases
-│ ├── bug reports
-│ └── findings
-│
-└── perfomance_test/
-├── performance_report.md
-└── performance_test.js
+The project is organized into separate modules, each focusing on a specific area of testing.
 
+The API_manualTesting section contains the manual API simulation along with supporting evidence used to validate system behavior before automation.  
+[View Manual Testing](./API_manualTesting/API_ManualSimulation.md)
 
-The `API_manualTesting` folder contains the manual API simulation and supporting evidence used to validate system behavior before automation.
+The automation module contains the test framework implemented using Python and pytest. It includes API tests, UI tests, end-to-end scenarios, and security validations.  
+[View Automation](./automation/)
 
-The `automation` module contains the test framework implemented using Python and pytest. It includes API tests, UI tests, end-to-end scenarios, security checks, and supporting utilities.
+The dataset_validation section focuses on validating data integrity across customers, orders, and payments using datasets and a Python validation script.  
+[View Dataset Validation](./dataset_validation/datasetValidation.md)
 
-The `dataset_validation` section focuses on validating data integrity across datasets, including both the validation logic and the datasets used.
+The overview_and_strategy section provides the system understanding, test strategy, detailed test cases, bug reports, and final findings.  
+[View Strategy and Findings](./overview_and_strategy/01_system_overview.md)
 
-The `overview_and_strategy` folder provides the overall understanding of the system, including the test strategy, detailed test cases, identified bugs, and key findings.
-
-The `perfomance_test` folder contains performance testing scripts and the corresponding analysis report.
-
+The performance_test section contains performance testing scripts and the corresponding analysis report.  
+[View Performance Report](./perfomance_test/performance_report.md)
 
 ## Deliverables
 
-This project includes all key deliverables expected for validating a distributed system, covering strategy, execution, and analysis.
+## Deliverables
 
-### Test Strategy
+All required deliverables are implemented and organized for easy access.
 
-A risk-based testing approach is defined to focus on the most critical areas such as data consistency, service interaction, and failure handling. The strategy explains trade-offs made during testing and defines the overall coverage across UI, APIs, data, and performance.
-
-Location:  
-./overview_and_strategy/03_test_strategy.md  
-
----
-
-### Test Cases
-
-A comprehensive set of test cases is designed to validate system behavior under different conditions. This includes normal scenarios where the system is expected to work correctly, failure scenarios to test robustness, and edge cases to simulate real-world unpredictability.
-
-Location:  
-./overview_and_strategy/04_test_cases.md  
+### Test Strategy  
+A risk-based testing approach covering trade-offs, assumptions, and system behavior.  
+[Open Test Strategy](./overview_and_strategy/03_test_strategy.md)
 
 ---
 
-### Bug Reports
-
-Detailed bug reports are documented with clear explanations of issues, along with their severity and impact. Each bug is supported with observations, logs, or payload-level evidence to justify its classification.
-
-Location:  
-./overview_and_strategy/05_bug_reports.md  
+### Test Cases  
+Includes positive, negative, and edge case scenarios validating system behavior.  
+[Open Test Cases](./overview_and_strategy/04_test_cases.md)
 
 ---
 
-### Automation Framework
-
-A lightweight and scalable automation framework is implemented using Python and pytest. It validates API behavior, UI flows, end-to-end scenarios, and basic security checks, ensuring repeatable and reliable testing.
-
-Location:  
-./automation/  
+### Bug Reports  
+Contains identified issues with severity, priority, and supporting evidence.  
+[Open Bug Reports](./overview_and_strategy/05_bug_reports.md)
 
 ---
 
-### Data Validation Script
-
-A Python-based validation script is used to verify dataset integrity across customers, orders, and payments. It checks relationships, detects inconsistencies, and ensures the data aligns with expected business logic.
-
-Location:  
-./dataset_validation/validate_dataset.py  
+### Automation Framework  
+A Python-based framework covering API, UI, end-to-end, and security testing.  
+[Open Automation Module](./automation/)
 
 ---
 
-### Performance Report
-
-Performance testing is conducted to analyze how the system behaves under load and delay conditions. The report highlights response behavior, potential bottlenecks, and system limitations.
-
-Location:  
-./perfomance_test/performance_report.md  
+### Data Validation Script  
+Validates dataset integrity and identifies inconsistencies in data relationships.  
+[Open Validation Script](./dataset_validation/validate_dataset.py)
 
 ---
 
-### Security Findings
+### Performance Report  
+Analyzes system behavior under load and highlights bottlenecks.  
+[Open Performance Report](./perfomance_test/performance_report.md)
 
-Security-related observations are identified during testing, including gaps in authentication, input validation, and access control. The impact of these issues on system reliability is also explained.
+---
 
-Location:  
-./automation/tests/test_security.py  
-./overview_and_strategy/06_findings.md  
-
+### Security Findings  
+Highlights vulnerabilities and their impact on system reliability.  
+[Open Security Tests](./automation/tests/test_security.py)  
+[Open Findings](./overview_and_strategy/06_findings.md)
 ---
 ## Questions and Answers
 
