@@ -1,123 +1,55 @@
+---
+
+## Automation Framework Overview
+
+The automation framework is designed to validate a distributed system by simulating real-world interactions across UI, APIs, and external services. The primary focus is on end-to-end behavior, ensuring that data flows correctly across independent components.
+
+A lightweight and modular structure is used to keep the framework scalable and easy to extend. UI interactions are abstracted using the Page Object Model, while API communication is handled through a reusable client layer to maintain consistency and reduce duplication.
 
 ---
 
-## Key Design Decisions
+## What Was Implemented
 
-### Lightweight Framework
-A minimal structure was chosen to prioritize **clarity and system behavior** over heavy abstraction.
+UI automation validates the login flow to ensure correct user interaction and response handling.
 
-### POM for UI
-Separates UI logic from test logic, improving readability and maintainability.
+API automation covers user creation, retrieval, and order simulation. These tests validate backend functionality and ensure APIs behave correctly under different inputs.
 
-### API Client Layer
-Encapsulates API calls to avoid duplication and improve structure.
+An end-to-end workflow is implemented where a user is created, mapped to an order, and enriched with external data. This validates cross-service data flow and highlights integration-level issues.
 
-### Retry Logic
-Handles transient failures, which are common in distributed systems.
-
-### Data-Driven Testing
-Ensures validation across multiple inputs instead of hardcoded values.
-
----
-
-## Test Coverage
-
-The automation covers:
-
-- UI validation (login flow)
-- API validation (user creation and retrieval)
-- End-to-end flow (User → Order → Geo)
-- GraphQL query validation
-- Security behavior (authentication gaps)
-- Data consistency validation
-
----
-
-## Key Scenarios Covered
-
-### Positive Scenarios
-- Valid user creation and retrieval
-- Valid order creation
-- Valid GraphQL query
-- Successful login flow
-
----
-
-### Negative Scenarios
-- Invalid or missing user references in orders
-- API calls without authentication
-- Invalid payloads accepted by system
-- Partial failures across services
-
----
-
-### Edge Cases
-
-- Multiple orders linked to non-existing users  
-- Mismatch between order.userId and user.id  
-- Missing fields in request payloads  
-- Repeated requests (no idempotency)  
-- Large or invalid userId values  
-- External dependency (GraphQL) failure  
-- Slow or delayed responses (simulated via httpbin)  
-
-These scenarios highlight how the system behaves when assumptions break.
+GraphQL queries are tested to ensure reliable data fetching from external systems.
 
 ---
 
 ## Data Validation
 
-A separate validation script checks:
+A dedicated validation layer verifies data integrity across services. It identifies orphan records, mismatched relationships, and incorrect values between entities.
 
-- orphan records (orders without users)
-- incorrect payment values
-- missing references
-
-This is critical because:
-> Distributed systems often fail silently when data is inconsistent.
+This ensures that even when APIs return successful responses, the underlying data remains consistent and reliable.
 
 ---
 
-## Security Observations
+## Failure Handling in Automation
 
-- API endpoints allow access without strict authentication  
-- No enforcement of access control  
-- System accepts manipulated or unexpected inputs  
+The framework includes retry logic to handle transient failures, improving test stability in distributed environments.
 
-These indicate potential vulnerabilities in real-world scenarios.
+Tests are designed to simulate failure scenarios such as missing data, invalid inputs, and partial service breakdowns to observe system behavior under stress.
 
 ---
 
-## Failure and Resilience
+## Security Checks in Automation
 
-The system was tested under:
+Basic security validations are performed by testing unauthenticated access and sending manipulated payloads.
 
-- delayed responses  
-- partial service failures  
-- inconsistent data states  
-
-Observations:
-- no retry mechanisms at system level  
-- no graceful failure handling  
-- system continues with invalid or incomplete data  
+This helps identify gaps in access control and input validation, which are critical in real-world systems.
 
 ---
 
-## Key Risks Identified
+## Overall Outcome
 
-- Data inconsistency across services  
-- Lack of validation for relationships  
-- Silent failures (incorrect but accepted data)  
-- Dependency on external services without fallback  
-- Open access behavior (security risk)  
+The automation framework successfully validates end-to-end system behavior, detects data inconsistencies, and uncovers gaps in validation, resilience, and security.
+
+It demonstrates a practical understanding of how distributed systems behave under both normal and failure conditions, with a strong focus on real-world testing scenarios.
 
 ---
 
-## Trade-offs
-
-- Focus on backend and data validation over UI depth  
-- Limited performance and security depth  
-- No real integration layer (simulation-based testing)  
-
----
-
+![alt text](image.png)

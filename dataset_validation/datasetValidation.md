@@ -1,115 +1,58 @@
+---
+
 # Dataset Validation
 
 ## Objective
 
-The dataset validation focuses on verifying data integrity across Customers, Orders, and Payments.  
-The goal is not only to check if data exists, but to ensure that relationships are correct, values are valid, and the data makes sense in real-world scenarios.
+The dataset validation focuses on verifying data integrity across Customers, Orders, and Payments. The goal is not just to confirm the presence of data, but to ensure that relationships between datasets are correct, values are valid, and the overall data reflects realistic system behavior.
 
 ---
 
 ## Approach
 
-The validation was performed in layers to simulate real QA thinking:
-
-- Relationship validation between datasets  
-- Data correctness checks  
-- Edge case detection  
-- Business logic validation  
-
-This ensures both structural and logical consistency.
+The validation was carried out in multiple layers to reflect real-world QA analysis. The process began with verifying relationships between datasets to ensure proper linking of entities. This was followed by checking data correctness to identify invalid or abnormal values. Additional attention was given to edge cases and unusual patterns, along with validation of basic business logic to confirm that the data aligns with expected real-world scenarios. This approach ensures both structural integrity and logical consistency across the system.
 
 ---
 
 ## Datasets Used
 
-- Customers  
-- Orders  
-- Payments  
+The validation was performed on three core datasets: Customers, Orders, and Payments. These datasets represent the primary entities in the system and are interconnected through relationships that were verified during the validation process.
 
 ---
 
 ## Validation Summary
 
-### Relationship Validation
+The relationship validation confirmed that all orders are correctly linked to valid customers and all payments are associated with valid orders. No orphan records were found, indicating that referential integrity is maintained across the datasets.
 
-The relationships between datasets were verified to ensure consistency.
+During data correctness checks, it was observed that there are nine records with invalid payment values that are less than or equal to zero. Since payment values are expected to be positive in all cases, this highlights a clear gap in validation at the data or processing level.
 
-- All orders are linked to valid customers  
-- All payments are linked to valid orders  
-- No orphan records found  
+The dataset was also checked for duplicates and null values in key identifiers. No duplicate orders were detected, and no null values were found in critical fields, confirming that the dataset is structurally clean.
 
-This indicates that referential integrity is maintained.
+Business logic validation was performed to ensure that the data aligns with real-world expectations. All orders were found to have valid status values with no missing entries. Delivery timelines were verified, and it was confirmed that delivery dates occur after purchase dates, with no inconsistencies observed.
 
----
-
-### Data Correctness
-
-Payment values were validated to ensure correctness.
-
-- 9 records found with invalid payment values (≤ 0)  
-
-This is a critical issue because payment values should always be positive.  
-It indicates missing validation at the data or processing layer.
-
----
-
-### Duplicate and Null Checks
-
-Basic data quality checks were performed.
-
-- No duplicate orders detected  
-- No null values in key identifiers  
-
-This confirms that the dataset is structurally clean.
-
----
-
-### Business Logic Validation
-
-Additional checks were performed to validate real-world behavior.
-
-**Order Status**
-- All orders have a valid status  
-- No missing values detected  
-
-**Delivery Timeline**
-- Verified that delivery date is after purchase date  
-- No invalid timelines found  
-
-**Payment Patterns**
-- 278 orders have more than 3 payments  
-
-This is unusual and requires further analysis:
-- could be valid (split payments)  
-- could indicate duplicate or retry issues  
+However, an unusual pattern was identified in payment behavior. A total of 278 orders were found to have more than three associated payments. While this could be valid in cases such as split payments, it may also indicate potential issues like duplicate transactions or retry-related anomalies, and therefore requires further investigation.
 
 ---
 
 ## Key Findings
 
-- 9 invalid payment records detected  
-- 278 orders show abnormal payment patterns  
-- No issues in relationships between datasets  
-- No duplicate or null identifier issues  
+The validation identified nine records with invalid payment values and a significant number of orders showing abnormal payment patterns. At the same time, no issues were found in dataset relationships, and the data was free from duplicates and null identifier values.
 
 ---
 
 ## Risks Identified
 
-- Invalid payment values can impact financial accuracy  
-- Multiple payments per order may indicate duplicate transactions  
-- Lack of strict validation allows incorrect data into the system  
+Invalid payment values pose a risk to financial accuracy and reporting. The presence of multiple payments for a single order may indicate duplicate transactions or system inconsistencies. Additionally, the acceptance of such data suggests a lack of strict validation controls, which could allow incorrect data to propagate through the system.
 
 ---
 
 ## Conclusion
 
-The dataset is structurally consistent, with strong relationships across Customers, Orders, and Payments.
+The dataset is structurally consistent, with strong and valid relationships across Customers, Orders, and Payments. However, issues related to data correctness and business logic were identified, particularly in payment validation and payment behavior patterns.
 
-However, data correctness and business logic issues were identified, especially in payment validation and payment behavior.
+This highlights that while structural integrity is maintained, it is equally important to ensure that data is logically valid. Without this, the system may continue to function while producing inaccurate or unreliable results.
 
-This highlights that:
+---
 
-> Structural integrity alone is not enough — data must also be logically valid to ensure reliable system behavior.
-
-![alt text](image.png)
+proof 
+![alt text](image-1.png)

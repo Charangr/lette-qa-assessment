@@ -5,7 +5,7 @@ from clients.reqres_client import create_user, get_users
 def test_create_user(name):
     # data-driven test
     payload = {
-        "name": wername,
+        "name": name,
         "job": "qa"
     }
 
